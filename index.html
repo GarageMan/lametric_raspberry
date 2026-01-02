@@ -117,31 +117,13 @@
     </div>
 
     <script>
-      const lat = 51.0333; /* Leverkusen */
-      const lon = 6.9833;
+      const lat = 51.0000; /* your home location */
+      const lon = 6.1234;
 
-      /* Geburtstagsliste */
+      /* Birthday list */
       const birthdays = [
-        { name: "STEFFI", day: 3, month: 5 },
-        { name: "JORK + BEN", day: 7, month: 10 },
-        { name: "LUTZ", day: 17, month: 3 },
-        { name: "WERNER", day: 26, month: 11 },
-        { name: "ENA", day: 29, month: 6 },
-        { name: "KAI", day: 25, month: 2 },
-        { name: "JANA", day: 2, month: 10 },
-        { name: "JARON", day: 15, month: 9 },
-        { name: "NELE", day: 13, month: 4 },
-        { name: "DORO", day: 7, month: 2 },
-        { name: "MANO", day: 16, month: 1 },
-        { name: "FINE", day: 8, month: 12 },
-        { name: "PHILIPP", day: 12, month: 9 },
-        { name: "MINA", day: 23, month: 7 },
-        { name: "INGI", day: 16, month: 12 },
-        { name: "RIEKE", day: 10, month: 8 },
-        { name: "HEIKE", day: 4, month: 6 },
-        { name: "FELIX", day: 12, month: 6 },
-        { name: "ANNE", day: 9, month: 11 },
-        { name: "RUTH", day: 16, month: 8 },
+        { name: "YOU", day: 3, month: 5 },
+        { name: "SOMEONE ELSE", day: 7, month: 10 },
       ];
 
       function getBirthdayName(date) {
@@ -153,7 +135,7 @@
         return null;
       }
 
-      /* Feiertage NRW + Karneval */
+      /* Hoildays NRW + Cologne Karneval */
       function getHolidayName(date) {
         const y = date.getFullYear();
         const f = Math.floor,
@@ -198,13 +180,13 @@
         return null;
       }
 
-      /* Windrichtung */
+      /* Wind Direction */
       function degToDir(deg) {
         const dirs = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
         return dirs[Math.round(deg / 45) % 8];
       }
 
-      /* Mondphase */
+      /* Moon Phases */
       function getMoonPhase(date) {
         const lp = 2551443; // Sekunden pro synodischem Monat
         const now = date.getTime() / 1000;
@@ -224,7 +206,7 @@
         return "bilder/moon_waning_crescent.gif";
       }
 
-      /* Wetter-Icons tagsüber */
+      /* Weather icons daylight */
       function getDayIcon(code) {
         if (code === 0) return "bilder/day_sunny.gif";
         if (code === 1 || code === 2) return "bilder/day_partly_cloudy.gif";
@@ -238,7 +220,7 @@
         return "bilder/day_cloudy.gif";
       }
 
-      /* Wetter-Icons nachts */
+      /* Weather icons nighttime */
       function getNightIcon(code) {
         if (code === 0) return "bilder/night_bright.gif";
         if (code === 1 || code === 2) return "bilder/night_partly_cloudy.gif";
@@ -251,7 +233,7 @@
         return "bilder/night_cloudy.gif";
       }
 
-      /* Sonnenaufgang / Sonnenuntergang */
+      /* Sun rise&set */
       async function fetchSunTimes() {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=sunrise,sunset&timezone=Europe%2FBerlin`;
         const response = await fetch(url);
@@ -269,7 +251,7 @@
         return data.current.weathercode;
       }
 
-      /* Wetterdaten */
+      /* Weather data */
       async function fetchWeather() {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,pressure_msl,wind_speed_10m,wind_direction_10m&timezone=Europe%2FBerlin`;
         const response = await fetch(url);
@@ -304,7 +286,7 @@
         }
       }
 
-      /* Uhrzeit & Datum */
+      /* Time & Date */
       function updateClock() {
         const now = new Date();
 
@@ -327,7 +309,7 @@
         document.getElementById("date").textContent = `${wochentag}, ${tag}. ${monat}`;
       }
 
-      /* Rotierende Anzeige */
+      /* Alternating display */
       let displayIndex = 0;
 
       function updateBirthdayIcon(today) {
@@ -350,7 +332,7 @@
           const holiday = getHolidayName(today);
           const birthday = getBirthdayName(today);
 
-          // Geburtstag-Icon unten links anzeigen/verbergen
+          // show/hide birthday icon
           updateBirthdayIcon(today);
 
           let text = "";
@@ -396,7 +378,7 @@
         }
       }
 
-      /* Mondphase aktualisieren */
+      /* Moonphase */
       function updateMoonphase() {
         const el = document.getElementById("moonphase");
         if (!el) return;
@@ -421,7 +403,7 @@
       document.addEventListener("DOMContentLoaded", init);
     </script>
 
-    <!-- Fog-Override (Nebel-Erkennung) -->
+    <!-- Fog-Override - a simple implementation -->
     <script>
       (function () {
         const FOG_ICON = "bilder/day_fog.gif";
