@@ -1,552 +1,469 @@
+
 <!DOCTYPE html>
 <html lang="de">
-   <head>
-      <meta charset="utf-8" />
-      <title>Lametric Dashboard</title>
-      <style>
-         @font-face {
-            font-family: "Lametric";
-            src: url("lametric.ttf") format("truetype");
-         }
+  <head>
+    <meta charset="utf-8" />
+    <title>Lametric Dashboard</title>
+    <style>
+      @font-face {
+        font-family: "Lametric";
+        src: url("lametric.ttf") format("truetype");
+        font-display: swap;
+      }
 
-         body {
-            background-color: black;
-            color: #d3d3d3;
-            text-align: center;
-            margin-top: 15vh;
-         }
+      :root {
+        --fg: #d3d3d3;
+        --grid-line: rgba(211, 211, 211, 0.8);
+      }
 
-         #container {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: 1fr 1fr 1fr;
-            align-items: center;
-            justify-items: center;
-            padding: 20px 40px;
-            border: 3px solid #d3d3d3;
-            border-radius: 10px;
-            box-sizing: border-box;
-            aspect-ratio: 13 / 9;
-            width: min(80vw, 1300px);
-			
-            /* Hilfslinien für 3x4 Grid: hellgraue Zellränder */
-            background-image: repeating-linear-gradient(
-                  to right,
-                  rgba(211, 211, 211, 0.8) 0,
-                  rgba(211, 211, 211, 0.8) 1px,
-                  transparent 1px,
-                  transparent calc(100% / 3)
-               ),
-               repeating-linear-gradient(
-                  to bottom,
-                  rgba(211, 211, 211, 0.8) 0,
-                  rgba(211, 211, 211, 0.8) 1px,
-                  transparent 1px,
-                  transparent calc(100% / 3)
-               );
-			   
-            background-size:
-               100% 100%,
-               100% 100%;
-			   
-            background-position:
-               0 0,
-               0 0;
-			   
-            background-repeat: no-repeat;
-         }
+      body {
+        background-color: black;
+        color: var(--fg);
+        text-align: center;
+        margin-top: 15vh;
+      }
 
-         #weather {
-            margin-right: 40px;
-            margin-left: 69px;
-            margin-top: -5px;
-            width: 116px;
-            height: 116px;
-            grid-column: 3;
-            grid-row: 3;
-            width: 116px;
-            height: 116px;
-            margin: 0;
-         }
+      #container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-areas:
+          "mp-icon date free-1"
+          "free-2 clock free-3"
+          "b-day weather w-icon";
 
-         #clock {
-            margin-top: 15px;
-            font-size: 7rem;
-            font-family: "Lametric", sans-serif;
-            margin: 0;
-            justify-self: center;
-            align-self: center;
-            grid-column: 2;
-            grid-row: 2;
-         }
+        align-items: center;
+        justify-items: center;
+        padding: 20px 40px;
+        border: 3px solid var(--fg);
+        border-radius: 10px;
+        box-sizing: border-box;
+        aspect-ratio: 13 / 9;
+        width: min(80vw, 1300px);
 
-         #date {
-            font-size: 3rem;
-            margin-top: 10px;
-            font-family: "Lametric", sans-serif;
-            text-align: center;
-            grid-column: 2;
-            grid-row: 1;
-         }
+        /* Hilfslinien für 3x3 Grid */
+        background-image:
+          repeating-linear-gradient(
+            to right,
+            var(--grid-line) 0,
+            var(--grid-line) 1px,
+            transparent 1px,
+            transparent calc(100% / 3)
+          ),
+          repeating-linear-gradient(
+            to bottom,
+            var(--grid-line) 0,
+            var(--grid-line) 1px,
+            transparent 1px,
+            transparent calc(100% / 3)
+          );
+        background-size: 100% 100%, 100% 100%;
+        background-position: 0 0, 0 0;
+        background-repeat: no-repeat;
+      }
 
-         #weatherTop {
-            font-size: 3rem;
-            margin-top: 25px;
-            font-family: "Lametric", sans-serif;
-         }
+      #clock {
+        grid-area: clock; 
+        font-size: 15rem;
+        font-family: "Lametric", sans-serif;
+        text-align: center;
+      }
 
-         #weatherBottom {
-            font-size: 3rem;
-            margin-top: 5px;
-            font-family: "Lametric", sans-serif;
-         }
+      #date {
+        grid-area: date; 
+        font-size: 5rem;
+        font-family: "Lametric", sans-serif;
+        text-align: center;
+      }
 
-         #moonphase {
-            margin: 0;
-            height: 116px;
-            width: 116px;
-            grid-column: 1;
-            grid-row: 1;
-         }
+      #weatherText {
+        grid-area: weather; 
+        font-size: 5rem;
+        font-family: "Lametric", sans-serif;
+        text-align: center;
+      }
 
-         #weatherInfo {
-            grid-column: 2;
-            grid-row: 3;
-         }
-		 
-         #calendar {
-            grid-column: 2;
-            grid-row: 3;
-         }
-		 
-      </style>
-   </head>
-   <body>
-      <div id="container">
-         <img alt="Mondphase" id="moonphase" />
-         <div id="date">---</div>
-         <div id="clock">
-            --:--:--
-            <img id="weather" src="bilder/day_sunny.gif" />
-         </div>
-         <img id="weather" src="bilder/day_sunny.gif" />
+      #moonphase {
+        grid-area: mp-icon;
+        margin: 0;
+        height: 116px;
+        width: 116px;
+      }
 
-         <div id="weatherTop"></div>
-         <div id="weatherBottom"></div>
-      </div>
-      <script>
-         const lat = 51.0333; /* Leverkusen */
-         const lon = 6.9833;
+      #weatherIcon {
+        grid-area: w-icon; 
+        margin: 0;
+        width: 116px;
+        height: 116px;
+      }
 
-         /* Geburtstagsliste */
-         const birthdays = [
-            { name: "STEFFI", day: 3, month: 4 },
-            { name: "JORK + BEN", day: 7, month: 9 },
-            { name: "LUTZ", day: 17, month: 2 },
-            { name: "WERNER", day: 26, month: 10 },
-            { name: "ENA", day: 29, month: 5 },
-            { name: "KAI", day: 25, month: 1 },
-            { name: "JANA", day: 2, month: 9 },
-            { name: "JARON", day: 15, month: 8 },
-            { name: "NELE", day: 13, month: 3 },
-            { name: "DORO", day: 7, month: 1 },
-            { name: "MANO", day: 16, month: 0 },
-            { name: "FINE", day: 8, month: 11 },
-            { name: "PHILIPP", day: 12, month: 8 },
-            { name: "MINA", day: 23, month: 6 },
-            { name: "INGI", day: 16, month: 11 },
-            { name: "RIEKE", day: 10, month: 7 },
-            { name: "HEIKE", day: 4, month: 5 },
-            { name: "FELIX", day: 12, month: 5 },
-            { name: "ANNE", day: 9, month: 10 },
-            { name: "RUTH", day: 16, month: 7 },
-         ];
+      #birthdayIcon {
+        grid-area: b-day;  
+        margin: 0;		
+        width: 116px;
+        height: 116px;
+      }
+	  
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <img alt="Mondphase" id="moonphase" />
+      <div id="date">---</div>
+      <div id="clock">--:--:--</div>
+      <img id="weatherIcon" src="bilder/day_sunny.gif" alt="Wetter" />
+      <img id="birthdayIcon" src="bilder/birthday_cake.gif" alt="Geburtstag" />
+      <div id="weatherText"></div>
+    </div>
 
-         function getBirthdayName(date) {
-            const d = date.getDate();
-            const m = date.getMonth();
-            for (const entry of birthdays) {
-               if (entry.day === d && entry.month === m) return entry.name;
+    <script>
+      const lat = 51.0333; /* Leverkusen */
+      const lon = 6.9833;
+
+      /* Geburtstagsliste */
+      const birthdays = [
+        { name: "STEFFI", day: 3, month: 5 },
+        { name: "JORK + BEN", day: 7, month: 10 },
+        { name: "LUTZ", day: 17, month: 3 },
+        { name: "WERNER", day: 26, month: 11 },
+        { name: "ENA", day: 29, month: 6 },
+        { name: "KAI", day: 25, month: 2 },
+        { name: "JANA", day: 2, month: 10 },
+        { name: "JARON", day: 15, month: 9 },
+        { name: "NELE", day: 13, month: 4 },
+        { name: "DORO", day: 7, month: 2 },
+        { name: "MANO", day: 16, month: 1 },
+        { name: "FINE", day: 8, month: 12 },
+        { name: "PHILIPP", day: 12, month: 9 },
+        { name: "MINA", day: 23, month: 7 },
+        { name: "INGI", day: 16, month: 12 },
+        { name: "RIEKE", day: 10, month: 8 },
+        { name: "HEIKE", day: 4, month: 6 },
+        { name: "FELIX", day: 12, month: 6 },
+        { name: "ANNE", day: 9, month: 11 },
+        { name: "RUTH", day: 16, month: 8 },
+      ];
+
+      function getBirthdayName(date) {
+        const d = date.getDate();
+        const m = date.getMonth() + 1;
+        for (const entry of birthdays) {
+          if (entry.day === d && entry.month === m) return entry.name;
+        }
+        return null;
+      }
+
+      /* Feiertage NRW + Karneval */
+      function getHolidayName(date) {
+        const y = date.getFullYear();
+        const f = Math.floor,
+          G = y % 19,
+          C = f(y / 100),
+          H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30,
+          I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)),
+          J = (y + f(y / 4) + I + 2 - C + f(C / 4)) % 7,
+          L = I - J,
+          month = 3 + f((L + 40) / 44),
+          day = L + 28 - 31 * f(month / 4);
+
+        const easter = new Date(y, month - 1, day);
+
+        const holidays = {
+          "Neujahr": new Date(y, 0, 1),
+          "Tag der Arbeit": new Date(y, 4, 1),
+          "Tag der deutschen Einheit": new Date(y, 9, 3),
+          "Allerheiligen": new Date(y, 10, 1),
+          "1. Weihnachtstag": new Date(y, 11, 25),
+          "2. Weihnachtstag": new Date(y, 11, 26),
+
+          "Weiberfastnacht": new Date(easter.getTime() - 52 * 86400000),
+          "Rosenmontag": new Date(easter.getTime() - 48 * 86400000),
+          "Veilchendienstag": new Date(easter.getTime() - 47 * 86400000),
+          "Aschermittwoch": new Date(easter.getTime() - 46 * 86400000),
+
+          "Karfreitag": new Date(easter.getTime() - 2 * 86400000),
+          "Ostersonntag": new Date(easter.getTime()),
+          "Ostermontag": new Date(easter.getTime() + 1 * 86400000),
+          "Christi Himmelfahrt": new Date(easter.getTime() + 39 * 86400000),
+          "Pfingstsonntag": new Date(easter.getTime() + 50 * 86400000),
+          "Fronleichnam": new Date(easter.getTime() + 60 * 86400000),
+        };
+
+        for (const name in holidays) {
+          const h = holidays[name];
+          if (h.getDate() === date.getDate() && h.getMonth() === date.getMonth()) {
+            return name;
+          }
+        }
+        return null;
+      }
+
+      /* Windrichtung */
+      function degToDir(deg) {
+        const dirs = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
+        return dirs[Math.round(deg / 45) % 8];
+      }
+
+      /* Mondphase */
+      function getMoonPhase(date) {
+        const lp = 2551443; // Sekunden pro synodischem Monat
+        const now = date.getTime() / 1000;
+        const new_moon = new Date(1970, 0, 7, 20, 35, 0).getTime() / 1000;
+        const phase = ((now - new_moon) % lp) / lp;
+        return phase < 0 ? phase + 1 : phase;
+      }
+
+      function getMoonPhaseFile(phase) {
+        if (phase < 0.03 || phase > 0.97) return "bilder/moon_new.gif";
+        if (phase < 0.16) return "bilder/moon_waxing_crescent.gif";
+        if (phase < 0.34) return "bilder/moon_first_quarter.gif";
+        if (phase < 0.47) return "bilder/moon_waxing_gibbous.gif";
+        if (phase < 0.53) return "bilder/moon_full.gif";
+        if (phase < 0.66) return "bilder/moon_waning_gibbous.gif";
+        if (phase < 0.84) return "bilder/moon_last_quarter.gif";
+        return "bilder/moon_waning_crescent.gif";
+      }
+
+      /* Wetter-Icons tagsüber */
+      function getDayIcon(code) {
+        if (code === 0) return "bilder/day_sunny.gif";
+        if (code === 1 || code === 2) return "bilder/day_partly_cloudy.gif";
+        if (code === 3) return "bilder/day_cloudy.gif";
+        if (code >= 45 && code <= 48) return "bilder/day_fog.gif";
+        if (code >= 51 && code <= 63) return "bilder/day_light_rain.gif";
+        if (code >= 65 && code <= 67) return "bilder/day_heavy_rain.gif";
+        if (code === 77) return "bilder/day_hail.gif";
+        if (code >= 85 && code <= 86) return "bilder/day_snow.gif";
+        if (code >= 95 && code <= 99) return "bilder/day_thunder.gif";
+        return "bilder/day_cloudy.gif";
+      }
+
+      /* Wetter-Icons nachts */
+      function getNightIcon(code) {
+        if (code === 0) return "bilder/night_bright.gif";
+        if (code === 1 || code === 2) return "bilder/night_partly_cloudy.gif";
+        if (code === 3) return "bilder/night_cloudy.gif";
+        if (code === 45 || code === 48) return "bilder/night_fog.gif";
+        if (code >= 51 && code <= 63) return "bilder/night_light_rain.gif";
+        if (code >= 65 && code <= 67) return "bilder/night_heavy_rain.gif";
+        if (code >= 85 && code <= 86) return "bilder/night_snow.gif";
+        if (code >= 95 && code <= 99) return "bilder/night_thunder.gif";
+        return "bilder/night_cloudy.gif";
+      }
+
+      /* Sonnenaufgang / Sonnenuntergang */
+      async function fetchSunTimes() {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=sunrise,sunset&timezone=Europe%2FBerlin`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return {
+          sunrise: new Date(data.daily.sunrise[0]),
+          sunset: new Date(data.daily.sunset[0]),
+        };
+      }
+
+      async function fetchWeatherCode() {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode&timezone=Europe%2FBerlin`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.current.weathercode;
+      }
+
+      /* Wetterdaten */
+      async function fetchWeather() {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,pressure_msl,wind_speed_10m,wind_direction_10m&timezone=Europe%2FBerlin`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return {
+          temp: data.current.temperature_2m,
+          pressure: data.current.pressure_msl,
+          wind: data.current.wind_speed_10m,
+          winddir: data.current.wind_direction_10m,
+        };
+      }
+
+      let sunTimes = null;
+
+      async function updateWeatherIcon() {
+        try {
+          if (!sunTimes) sunTimes = await fetchSunTimes();
+          const now = new Date();
+          const isDay = now >= sunTimes.sunrise && now < sunTimes.sunset;
+
+          const img = document.getElementById("weatherIcon");
+          if (!img) return;
+
+          const code = await fetchWeatherCode();
+          window.weatherInfo = code; 
+
+          img.src = isDay ? getDayIcon(code) : getNightIcon(code);
+        } catch (err) {
+          const img = document.getElementById("weatherIcon");
+          if (img) img.src = "bilder/day_cloudy.gif";
+          console.error("updateWeatherIcon failed:", err);
+        }
+      }
+
+      /* Uhrzeit & Datum */
+      function updateClock() {
+        const now = new Date();
+
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
+        const s = String(now.getSeconds()).padStart(2, "0");
+        document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+
+        const wochentage = [
+          "SONNTAG", "MONTAG", "DIENSTAG", "MITTWOCH", "DONNERSTAG", "FREITAG", "SAMSTAG",
+        ];
+        const monate = [
+          "JAN", "FEB", "MÄR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEZ",
+        ];
+
+        const tag = String(now.getDate());
+        const monat = monate[now.getMonth()];
+        const wochentag = wochentage[now.getDay()];
+
+        document.getElementById("date").textContent = `${wochentag}, ${tag}. ${monat}`;
+      }
+
+      /* Rotierende Anzeige */
+      let displayIndex = 0;
+
+      function updateBirthdayIcon(today) {
+        const name = getBirthdayName(today);
+        const el = document.getElementById('birthdayIcon');
+        if (!el) return;
+        if (name) {
+          el.style.display = 'block';
+          el.title = `Geburtstag: ${name}`;
+        } else {
+          el.style.display = 'none';
+          el.title = '';
+        }
+      }
+
+      async function updateWeather() {
+        try {
+          const weather = await fetchWeather();
+          const today = new Date();
+          const holiday = getHolidayName(today);
+          const birthday = getBirthdayName(today);
+
+          // Geburtstag-Icon unten links anzeigen/verbergen
+          updateBirthdayIcon(today);
+
+          let text = "";
+
+          switch (displayIndex) {
+            case 0: {
+              const t = weather.temp;
+              const color = t > 25 ? "#FF3B30" : t <= 0 ? "#4DA3FF" : "#FFFFFF";
+              const tStr = Number.isFinite(t) ? t.toFixed(1) : t;
+              text = `<span style="color:${color}">${tStr} °C</span>`;
+              break;
             }
-            return null;
-         }
+            case 1:
+              text = `${weather.pressure} mbar`;
+              break;
+            case 2:
+              text = `${weather.wind} KM/H - ${degToDir(weather.winddir)}`;
+              break;
+            case 3:
+              if (holiday) {
+                text = `<span style="color:#32CD32">${holiday}</span>`;
+              } else {
+                displayIndex = (displayIndex + 1) % 5;
+                return;
+              }
+              break;
+            case 4:
+              if (birthday) {
+                text = `<span style="color:#FFC30B">${birthday}</span>`;
+              } else {
+                displayIndex = (displayIndex + 1) % 5;
+                return;
+              }
+              break;
+          }
 
-         /* Feiertage NRW + Karneval */
-         function getHolidayName(date) {
-            const y = date.getFullYear();
-            const f = Math.floor,
-               G = y % 19,
-               C = f(y / 100),
-               H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30,
-               I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)),
-               J = (y + f(y / 4) + I + 2 - C + f(C / 4)) % 7,
-               L = I - J,
-               month = 3 + f((L + 40) / 44),
-               day = L + 28 - 31 * f(month / 4);
+          const el = document.getElementById("weatherText");
+          if (el) el.innerHTML = text;
 
-            const easter = new Date(y, month - 1, day);
+          displayIndex = (displayIndex + 1) % 5;
+        } catch (e) {
+          console.error("updateWeather failed:", e);
+        }
+      }
 
-            const holidays = {
-               Neujahr: new Date(y, 0, 1),
-               "Tag der Arbeit": new Date(y, 4, 1),
-               "Tag der deutschen Einheit": new Date(y, 9, 3),
-               ALllerheiligen: new Date(y, 10, 1),
-               "1. Weihnachtstag": new Date(y, 11, 25),
-               "2. Weihnachtstag": new Date(y, 11, 26),
+      /* Mondphase aktualisieren */
+      function updateMoonphase() {
+        const el = document.getElementById("moonphase");
+        if (!el) return;
+        const phase = getMoonPhase(new Date());
+        el.src = getMoonPhaseFile(phase);
+      }
 
-               Weiberfastnacht: new Date(easter.getTime() - 52 * 86400000),
-               Rosenmontag: new Date(easter.getTime() - 48 * 86400000),
-               Veilchendienstag: new Date(easter.getTime() - 47 * 86400000),
-               Aschermittwoch: new Date(easter.getTime() - 46 * 86400000),
+      /* Start */
+      function init() {
+        updateClock();
+        setInterval(updateClock, 1000);
 
-               Karfreitag: new Date(easter.getTime() - 2 * 86400000),
-               Ostersonntag: new Date(easter.getTime()),
-               Ostermontag: new Date(easter.getTime() + 1 * 86400000),
-               "Christi Himmelfahrt": new Date(
-                  easter.getTime() + 39 * 86400000,
-               ),
-               Pfingstsonntag: new Date(easter.getTime() + 50 * 86400000),
-               Fronleichnam: new Date(easter.getTime() + 60 * 86400000),
-            };
+        updateWeatherIcon();
+        setInterval(updateWeatherIcon, 60 * 1000);
 
-            for (const name in holidays) {
-               const h = holidays[name];
-               if (
-                  h.getDate() === date.getDate() &&
-                  h.getMonth() === date.getMonth()
-               ) {
-                  return name;
-               }
-            }
-            return null;
-         }
+        updateWeather();
+        setInterval(updateWeather, 5000);
 
-         /* Windrichtung */
-         function degToDir(deg) {
-            const dirs = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
-            return dirs[Math.round(deg / 45) % 8];
-         }
+        updateMoonphase();
+        setInterval(updateMoonphase, 60 * 60 * 1000);
+      }
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
 
-         /* Mondphase */
-         function getMoonPhase(date) {
-            const lp = 2551443;
-            const now = date.getTime() / 1000;
-            const new_moon = new Date(1970, 0, 7, 20, 35, 0).getTime() / 1000;
-            const phase = ((now - new_moon) % lp) / lp;
-            return phase < 0 ? phase + 1 : phase;
-         }
+    <!-- Fog-Override (Nebel-Erkennung) -->
+    <script>
+      (function () {
+        const FOG_ICON = "bilder/day_fog.gif";
+        const weatherEl = document.getElementById("weatherIcon");
+        if (!weatherEl) return;
 
-         function getMoonPhaseFile(phase) {
-            if (phase < 0.03 || phase > 0.97) return "bilder/moon_new.gif";
-            if (phase < 0.16) return "bilder/moon_waxing_crescent.gif";
-            if (phase < 0.34) return "bilder/moon_first_quarter.gif";
-            if (phase < 0.47) return "bilder/moon_waxing_gibbous.gif";
-            if (phase < 0.53) return "bilder/moon_full.gif";
-            if (phase < 0.66) return "bilder/moon_waning_gibbous.gif";
-            if (phase < 0.84) return "bilder/moon_last_quarter.gif";
-            return "bilder/moon_waning_crescent.gif";
-         }
+        function hasFogText(str) {
+          if (!str) return false;
+          const t = String(str).toLowerCase();
+          return t.includes("nebel") || t.includes("fog") || t.includes("mist") || t.includes("haze");
+        }
 
-         /* Wetter-Icons tagsüber */
-         function getDayIcon(code) {
-            if (code === 0) return "bilder/day_sunny.gif";
-            if (code === 1 || code === 2) return "bilder/day_partly_cloudy.gif";
-            if (code === 3) return "bilder/day_cloudy.gif";
-            if (code >= 51 && code <= 63) return "bilder/day_light_rain.gif";
-            if (code >= 65 && code <= 67) return "bilder/day_heavy_rain.gif";
-            if (code === 77) return "bilder/day_hail.gif";
-            if (code >= 85 && code <= 86) return "bilder/day_snow.gif";
-            return "bilder/day_cloudy.gif";
-         }
+        function hasFogByGlobals() {
+          try {
+            if (typeof weatherInfo !== "undefined" && (weatherInfo === 45 || weatherInfo === 48)) return true;
+            if (typeof visibilityMeters !== "undefined" && visibilityMeters <= 1000) return true;
+          } catch (e) {}
+          return false;
+        }
 
-         /* Wetter-Icons nachts */
-         function getNightIcon(code) {
-            if (code === 0) return "bilder/night_bright.gif";
-            if (code === 1 || code === 2)
-               return "bilder/night_partly_cloudy.gif";
-            if (code === 3) return "bilder/night_cloudy.gif";
-            if (code === 45 || code === 48) return "bilder/night_fog.gif";
-            if (code >= 51 && code <= 63) return "bilder/night_light_rain.gif";
-            if (code >= 65 && code <= 67) return "bilder/night_heavy_rain.gif";
-            if (code >= 85 && code <= 86) return "bilder/night_snow.gif";
-            if (code >= 95 && code <= 99) return "bilder/night_thunder.gif";
-            return "bilder/night_cloudy.gif";
-         }
+        function applyFogOverride() {
+          const textEl = document.getElementById("weatherText");
+          const byText = hasFogText(textEl?.textContent);
+          const byGlobals = hasFogByGlobals();
+          if (byText || byGlobals) {
+            weatherEl.src = FOG_ICON;
+            return true;
+          }
+          return false;
+        }
 
-         /* Sonnenaufgang / Sonnenuntergang */
-         async function fetchSunTimes() {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=sunrise,sunset&timezone=Europe%2FBerlin`;
-            const response = await fetch(url);
-            const data = await response.json();
-            return {
-               sunrise: new Date(data.daily.sunrise[0]),
-               sunset: new Date(data.daily.sunset[0]),
-            };
-         }
+        applyFogOverride();
 
-         async function fetchWeatherCode() {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weathercode&timezone=Europe%2FBerlin`;
-            const response = await fetch(url);
-            const data = await response.json();
-            return data.current.weathercode;
-         }
+        const el = document.getElementById("weatherText");
+        if (el) {
+          const mo = new MutationObserver(() => applyFogOverride());
+          mo.observe(el, { childList: true, subtree: true, characterData: true });
+        }
 
-         let sunTimes = null;
-
-         async function updateWeatherIcon() {
-            if (!sunTimes) sunTimes = await fetchSunTimes();
-
-            const now = new Date();
-            const isDay = now >= sunTimes.sunrise && now < sunTimes.sunset;
-            const img = document.getElementById("weather");
-
-            if (isDay) {
-               const code = await fetchWeatherCode();
-               img.src = getDayIcon(code);
-            } else {
-               const code = await fetchWeatherCode();
-               img.src = getNightIcon(code); 
-            }
-         }
-
-         /* Uhrzeit & Datum */
-         function updateClock() {
-            const now = new Date();
-
-            const h = String(now.getHours()).padStart(2, "0");
-            const m = String(now.getMinutes()).padStart(2, "0");
-            const s = String(now.getSeconds()).padStart(2, "0");
-            document.getElementById("clock").textContent = `${h}:${m}:${s}`;
-
-            const wochentage = [
-               "SONNTAG",
-               "MONTAG",
-               "DIENSTAG",
-               "MITTWOCH",
-               "DONNERSTAG",
-               "FREITAG",
-               "SAMSTAG",
-            ];
-            const monate = [
-               "JAN",
-               "FEB",
-               "MÄR",
-               "APR",
-               "MAI",
-               "JUN",
-               "JUL",
-               "AUG",
-               "SEP",
-               "OKT",
-               "NOV",
-               "DEZ",
-            ];
-
-            const tag = String(now.getDate());
-            const monat = monate[now.getMonth()];
-            const wochentag = wochentage[now.getDay()];
-
-            document.getElementById("date").textContent =
-               `${wochentag}, ${tag}. ${monat}`;
-         }
-
-         /* Wetterdaten */
-         async function fetchWeather() {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,pressure_msl,wind_speed_10m,wind_direction_10m&timezone=Europe%2FBerlin`;
-            const response = await fetch(url);
-            const data = await response.json();
-            return {
-               temp: data.current.temperature_2m,
-               pressure: data.current.pressure_msl,
-               wind: data.current.wind_speed_10m,
-               winddir: data.current.wind_direction_10m,
-            };
-         }
-
-         /* Rotierende Anzeige */
-         let displayIndex = 0;
-
-         async function updateWeather() {
-            const weather = await fetchWeather();
-            const today = new Date();
-            const holiday = getHolidayName(today);
-            const birthday = getBirthdayName(today);
-
-            let top = "";
-            let bottom = "";
-
-            switch (displayIndex) {
-               case 0: {
-                  const t = weather.temp; 
-                  const color =
-                     t > 25
-                        ? "#FF3B30"
-                        : t <= 0
-                          ? "#4DA3FF"
-                          : "#FFFFFF";
-
-                  const tStr = Number.isFinite(t) ? t.toFixed(1) : t;
-
-                  top = `<span style="color:${color}">${tStr} °C</span>`;
-                  break;
-               }
-
-               case 1:
-                  top = `${weather.pressure} mbar`;
-                  break;
-
-               case 2:
-                  top = `${weather.wind} KM/H - ${degToDir(weather.winddir)}`;
-                  break;
-
-               case 3:
-                  if (holiday) {
-                     top = `<span style="color:#32CD32">${holiday}</span>`;
-                  } else {
-                     displayIndex = (displayIndex + 1) % 5;
-                     return;
-                  }
-                  break;
-
-               case 4:
-                  if (birthday) {
-                     top = `GEBURTSTAG: <span style="color:#FFC30B">${birthday}</span>`;
-                  } else {
-                     displayIndex = (displayIndex + 1) % 5;
-                     return;
-                  }
-                  break;
-            }
-
-            document.getElementById("weatherTop").innerHTML = top;
-            document.getElementById("weatherBottom").textContent = bottom;
-
-            displayIndex = (displayIndex + 1) % 5;
-         }
-
-         /* Start */
-         updateClock();
-         setInterval(updateClock, 1000);
-
-         updateWeatherIcon();
-         setInterval(updateWeatherIcon, 60000);
-
-         updateWeather();
-         setInterval(updateWeather, 5000);
-      </script>
-      <script>
-         (function () {
-            const FOG_ICON = "bilder/day_fog.gif";
-            const weatherEl = document.getElementById("weather");
-            if (!weatherEl) return;
-
-            function hasFogText(str) {
-               if (!str) return false;
-               const t = String(str).toLowerCase();
-               return (
-                  t.includes("nebel") ||
-                  t.includes("fog") ||
-                  t.includes("mist") ||
-                  t.includes("haze")
-               );
-            }
-
-            function colorForWindKmh(kmh) {
-               if (!Number.isFinite(kmh)) return "#FFFFFF"; // Fallback: weiß
-               if (kmh <= 10) return "#6BA8FF"; // ruhig
-               if (kmh <= 25) return "#3BCB73"; // leicht
-               if (kmh <= 45) return "#F6C445"; // mäßig
-               if (kmh <= 65) return "#FF8A33"; // stark
-               return "#FF3B30"; // stürmisch
-            }
-
-            function hasFogByGlobals() {
-               try {
-                  if (
-                     typeof weatherCode !== "undefined" &&
-                     (weatherCode === 45 || weatherCode === 48)
-                  )
-                     return true;
-                  if (
-                     typeof visibilityMeters !== "undefined" &&
-                     visibilityMeters <= 1000
-                  )
-                     return true;
-               } catch (e) {}
-               return false;
-            }
-
-            function applyFogOverride() {
-               const topEl = document.getElementById("weatherTop");
-               const botEl = document.getElementById("weatherBottom");
-               const byText =
-                  hasFogText(topEl?.textContent) ||
-                  hasFogText(botEl?.textContent);
-               const byGlobals = hasFogByGlobals();
-               if (byText || byGlobals) {
-                  weatherEl.src = FOG_ICON;
-                  return true;
-               }
-               return false;
-            }
-
-            applyFogOverride();
-
-            ["weatherTop", "weatherBottom"].forEach((id) => {
-               const el = document.getElementById(id);
-               if (!el) return;
-               const mo = new MutationObserver(() => {
-                  applyFogOverride();
-               });
-               mo.observe(el, {
-                  childList: true,
-                  subtree: true,
-                  characterData: true,
-               });
-            });
-
-            const moIcon = new MutationObserver(() => {
-               applyFogOverride();
-            });
-            moIcon.observe(weatherEl, {
-               attributes: true,
-               attributeFilter: ["src"],
-            });
-         })();
-      </script>
-      <script>
-         (function () {
-            var el = document.getElementById("moonphase");
-            if (
-               !el ||
-               typeof getMoonPhase !== "function" ||
-               typeof getMoonPhaseFile !== "function"
-            )
-               return;
-            function upd() {
-               var phase = getMoonPhase(new Date());
-               el.src = getMoonPhaseFile(phase);
-            }
-            upd();
-            setInterval(upd, 60 * 60 * 1000);
-         })();
-      </script>
-      <script>
-         (function () {
-            var el = document.getElementById("moonphase");
-            if (
-               !el ||
-               typeof getMoonPhase !== "function" ||
-               typeof getMoonPhaseFile !== "function"
-            )
-               return;
-            function upd() {
-               var phase = getMoonPhase(new Date());
-               el.src = getMoonPhaseFile(phase);
-            }
-            upd();
-            setInterval(upd, 60 * 60 * 1000);
-         })();
-      </script>
-   </body>
+        const moIcon = new MutationObserver(() => applyFogOverride());
+        moIcon.observe(weatherEl, { attributes: true, attributeFilter: ["src"] });
+      })();
+    </script>
+  </body>
 </html>
