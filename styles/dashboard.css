@@ -1,0 +1,7 @@
+
+#clock { grid-area: clock; font-size: 15rem; font-family: "Lametric", sans-serif; text-align: center; }
+#date  { grid-area: date;  font-size: 5rem;  font-family: "Lametric", sans-serif; text-align: center; }
+#weatherText { grid-area: weather; font-size: 5rem; font-family: "Lametric", sans-serif; text-align: center; }
+#moonphase   { grid-area: mp-icon; margin: 0; height: 116px; width: 116px; }
+#weatherIcon { grid-area: w-icon;  margin: 0; height: 116px; width: 116px; }
+#birthdayIcon{ grid-area: b-day;   margin: 0; height: 116px; width: 116px; }
